@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="plugin.audio.itunes"
+  version="0.01"
+  name="iTunes"
+  provider-name="d4rk@xbmc.org">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.pysqlite" version="2.5.6"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+           library="default.py">
+    <provides>audio</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>iTunes Plugin (MAC)</summary>
+    <description>This plugin allows users to access their media organized in iTunes </description>
+    <disclaimer>This plugin will only work on Mac and may not work at all</disclaimer>
+    <platform>osx</platform>
+  </extension>
+</addon>

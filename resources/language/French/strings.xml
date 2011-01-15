@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+	
+	<!-- Not all strings have been implemented yet -->
+	
+    <!-- Plugin strings -->
+    <string id="30200">%d étoile</string>
+    <string id="30210">Import de la librairie iTunes</string>
+    <string id="30211">%d items importé</string>
+    <string id="30212">En train de scanner 'iTunes Music Library.xml' ...</string>
+    <string id="30213">Imporer librarie iTunes</string>
+
+    <!-- Category strings -->
+    <string id="30100">Artistes</string>
+    <string id="30101">Albums</string>
+    <string id="30102">Playlistes</string>
+    <string id="30103">Genres</string>
+    <string id="30104">Classement</string>
+    <string id="30105">&lt;&lt; Imporer librarie iTunes &gt;&gt;</string>
+
+    <!-- Plugin settings strings -->
+    <string id="30000">Repertoire de 'iTunes Music Library.xml'</string>
+    <string id="30003">Mise a jour automatique de la librarie</string>
+    <string id="30004">Cacher l'item d'importation de la librarie dans le menu principal.</string>
+</strings>
