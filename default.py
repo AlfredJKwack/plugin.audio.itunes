@@ -278,32 +278,49 @@ def root_directory():
     # add the artists entry
     item = gui.ListItem(addon.getLocalizedString(30100), thumbnailImage=ICONS_PATH+"/artist.png" )
     item.setInfo( type="Music", infoLabels={ "Title": "Artists" } )
-    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=artists", listitem = item,
-                            isFolder = True)
+    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=artists", listitem = item, isFolder = True)
 
     item = gui.ListItem(addon.getLocalizedString(30101), thumbnailImage=ICONS_PATH+"/albums.png" )
     item.setInfo( type="Music", infoLabels={ "Title": "Albums" } )
-    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=albums", listitem = item, 
-                            isFolder = True)
+    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=albums", listitem = item, isFolder = True)
 
     item = gui.ListItem(addon.getLocalizedString(30102), thumbnailImage=ICONS_PATH+"/playlist.png" )
     item.setInfo( type="Music", infoLabels={ "Title": "Playlists" } )
-    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=playlists", listitem = item, 
-                            isFolder = True)
+    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=playlists", listitem = item, isFolder = True)
 
     item = gui.ListItem(addon.getLocalizedString(30103), thumbnailImage=ICONS_PATH+"/genres.png" )
     item.setInfo( type="Music", infoLabels={ "Title": "Genres" } )
-    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=genres", listitem = item, 
-                            isFolder = True)
+    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=genres", listitem = item, isFolder = True)
 
     item = gui.ListItem(addon.getLocalizedString(30104), thumbnailImage=ICONS_PATH+"/star.png" )
     item.setInfo( type="Music", infoLabels={ "Title": "Rating" } )
-    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=ratings", listitem = item, 
-                            isFolder = True)
+    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=ratings", listitem = item, isFolder = True)
 
-    item = gui.ListItem(addon.getLocalizedString(30105), thumbnailImage=ICONS_PATH+"/import.png"  )
-    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=rescan", listitem = item, 
-                            isFolder = True, totalItems=100)
+    # hide library import if so desired
+    hide_import_lib = addon.getSetting('hide_import_lib')
+    if (hide_import_lib == ""):
+        addon.setSetting('hide_import_lib', 'false')
+        hide_import_lib = "false"
+    if (hide_import_lib == "false"):
+        item = gui.ListItem(addon.getLocalizedString(30105), thumbnailImage=ICONS_PATH+"/import.png"  )
+        plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=rescan", listitem = item, isFolder = True, totalItems=100)
+
+    # automatically update library if desired
+    auto_update_lib = addon.getSetting('auto_update_lib')
+    if (auto_update_lib == ""):
+        addon.setSetting('auto_update_lib', 'false')
+        auto_update_lib = "false"
+    if (auto_update_lib == "true"):
+        try:
+            xml_mtime = os.path.getmtime(xmlfile)
+            db_mtime = os.path.getmtime(db_file)
+        except Exception, e:
+            print to_str(e)
+            pass
+        else:
+            if (xml_mtime > db_mtime):
+            import_library(addon.getSetting('albumdata_xml_path'))
+
 
 def main():
     params = sys.argv[2]
