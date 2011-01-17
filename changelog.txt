@@ -1,8 +1,8 @@
 0.2.1 - 16 Jan 2011
-- Autoupdate library if iTunes' XML file changed
+- Ability to autoupdate library if iTunes' XML file changed
 - Ability to hide the "import" item from the menu
 
-0.2.0 - 2011
+0.2.0 - 15 Jan 2011
 - Port to new XBMC Addons system
 - Make path to AlbumData.xml configurable
 - Use pysqlite script module.

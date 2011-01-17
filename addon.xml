@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="plugin.audio.itunes"
-  version="0.01"
+  version="0.02"
   name="iTunes"
-  provider-name="d4rk@xbmc.org">
+  provider-name="Alfred J Kwack">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
     <import addon="script.module.pysqlite" version="2.5.6"/>
