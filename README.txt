@@ -23,7 +23,7 @@ automatically on start. This is disabled by default.
 Translations
 ============
 If you'd like to help translate this plugin to another language, please send
-a patch to jingai at floatingpenguins dot com.
+a patch to alfred_j_kwack at badsoda dot com.
 
 If possible, patch against the most recent version at:
 
