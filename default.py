@@ -20,17 +20,25 @@ import xbmcplugin as plugin
 import xbmcaddon
 
 addon = xbmcaddon.Addon(id="plugin.audio.itunes")
+#BASE_URL="plugin://music/iTunes/"
 BASE_URL = "%s" % (sys.argv[0])
 PLUGIN_PATH = addon.getAddonInfo("path")
+#RESOURCE_PATH = xbmc.translatePath(os.path.join(os.getcwd(), "resources"))
 RESOURCE_PATH = os.path.join(PLUGIN_PATH, "resources")
 ICONS_PATH = os.path.join(RESOURCE_PATH, "icons")
+
+#sys.path.append(os.path.join(RESOURCE_PATH, "platform_libraries", platform))
 LIB_PATH = os.path.join(RESOURCE_PATH, "lib")
 sys.path.append(LIB_PATH)
 
 from resources.lib.itunes_parser import *
 
+#DB_PATH = xbmc.translatePath("u:\\plugins\\music\\iTunes\\xbmcitunesdb.db") #FIXME
 DB_PATH = xbmc.translatePath(os.path.join(addon.getAddonInfo("Profile"), "xbmcitunesdb.db"))
 db = ITunesDB(DB_PATH)
+
+platform = "osx"
+
     
 def render_tracks(tracks):
     for track in tracks:
@@ -45,12 +53,26 @@ def render_tracks(tracks):
             labels['tracknumber'] = int(track['albumtracknumber'])
         if track['playtime']:
             labels['duration'] = int(track['playtime'])/1000.0
+        if track['year']:
+            labels['year'] = int(track['year'])
+        if track['rating']:
+            labels['rating'] = int(int(track['rating']) / 20) 
         item.setInfo( type="music", infoLabels=labels )
         plugin.addDirectoryItem(handle = int(sys.argv[1]),
                                 url=track['filename'],
                                 listitem = item,
                                 isFolder = False)
 
+    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_GENRE )
+    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_TITLE )
+    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_TITLE_IGNORE_THE )
+    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_SONG_RATING )
+#    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_YEAR)
+    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_ARTIST )
+    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_ARTIST_IGNORE_THE )
+    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_TRACKNUM )
+    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_ALBUM_IGNORE_THE )
+    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_ALBUM )
 								
 def list_tracks_by_album(params):
     global db
@@ -278,49 +300,32 @@ def root_directory():
     # add the artists entry
     item = gui.ListItem(addon.getLocalizedString(30100), thumbnailImage=ICONS_PATH+"/artist.png" )
     item.setInfo( type="Music", infoLabels={ "Title": "Artists" } )
-    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=artists", listitem = item, isFolder = True)
+    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=artists", listitem = item,
+                            isFolder = True)
 
     item = gui.ListItem(addon.getLocalizedString(30101), thumbnailImage=ICONS_PATH+"/albums.png" )
     item.setInfo( type="Music", infoLabels={ "Title": "Albums" } )
-    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=albums", listitem = item, isFolder = True)
+    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=albums", listitem = item, 
+                            isFolder = True)
 
     item = gui.ListItem(addon.getLocalizedString(30102), thumbnailImage=ICONS_PATH+"/playlist.png" )
     item.setInfo( type="Music", infoLabels={ "Title": "Playlists" } )
-    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=playlists", listitem = item, isFolder = True)
+    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=playlists", listitem = item, 
+                            isFolder = True)
 
     item = gui.ListItem(addon.getLocalizedString(30103), thumbnailImage=ICONS_PATH+"/genres.png" )
     item.setInfo( type="Music", infoLabels={ "Title": "Genres" } )
-    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=genres", listitem = item, isFolder = True)
+    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=genres", listitem = item, 
+                            isFolder = True)
 
     item = gui.ListItem(addon.getLocalizedString(30104), thumbnailImage=ICONS_PATH+"/star.png" )
     item.setInfo( type="Music", infoLabels={ "Title": "Rating" } )
-    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=ratings", listitem = item, isFolder = True)
+    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=ratings", listitem = item, 
+                            isFolder = True)
 
-    # hide library import if so desired
-    hide_import_lib = addon.getSetting('hide_import_lib')
-    if (hide_import_lib == ""):
-        addon.setSetting('hide_import_lib', 'false')
-        hide_import_lib = "false"
-    if (hide_import_lib == "false"):
-        item = gui.ListItem(addon.getLocalizedString(30105), thumbnailImage=ICONS_PATH+"/import.png"  )
-        plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=rescan", listitem = item, isFolder = True, totalItems=100)
-
-    # automatically update library if desired
-    auto_update_lib = addon.getSetting('auto_update_lib')
-    if (auto_update_lib == ""):
-        addon.setSetting('auto_update_lib', 'false')
-        auto_update_lib = "false"
-    if (auto_update_lib == "true"):
-        try:
-            xml_mtime = os.path.getmtime(xmlfile)
-            db_mtime = os.path.getmtime(db_file)
-        except Exception, e:
-            print to_str(e)
-            pass
-        else:
-            if (xml_mtime > db_mtime):
-            import_library(addon.getSetting('albumdata_xml_path'))
-
+    item = gui.ListItem(addon.getLocalizedString(30105), thumbnailImage=ICONS_PATH+"/import.png"  )
+    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=rescan", listitem = item, 
+                            isFolder = True, totalItems=100)
 
 def main():
     params = sys.argv[2]

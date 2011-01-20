@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="plugin.audio.itunes"
-  version="0.02"
+  version="0.2.2"
   name="iTunes"
   provider-name="Alfred J Kwack">
   <requires>
@@ -15,7 +15,7 @@
   <extension point="xbmc.addon.metadata">
     <summary>iTunes Plugin (MAC)</summary>
     <description>This plugin allows users to access their media organized in iTunes </description>
-    <disclaimer>This plugin will only work on Mac and may not work at all</disclaimer>
+    <disclaimer>Tested on OSX only.</disclaimer>
     <platform>osx</platform>
   </extension>
 </addon>

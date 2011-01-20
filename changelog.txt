@@ -1,3 +1,6 @@
+0.2.2 - 20 Jan 2011
+- Added ability to sort songs by rating, genre, artist, album, track number.
+
 0.2.1 - 16 Jan 2011
 - Ability to autoupdate library if iTunes' XML file changed
 - Ability to hide the "import" item from the menu
