@@ -20,25 +20,19 @@ import xbmcplugin as plugin
 import xbmcaddon
 
 addon = xbmcaddon.Addon(id="plugin.audio.itunes")
-#BASE_URL="plugin://music/iTunes/"
 BASE_URL = "%s" % (sys.argv[0])
 PLUGIN_PATH = addon.getAddonInfo("path")
-#RESOURCE_PATH = xbmc.translatePath(os.path.join(os.getcwd(), "resources"))
 RESOURCE_PATH = os.path.join(PLUGIN_PATH, "resources")
 ICONS_PATH = os.path.join(RESOURCE_PATH, "icons")
-
-#sys.path.append(os.path.join(RESOURCE_PATH, "platform_libraries", platform))
 LIB_PATH = os.path.join(RESOURCE_PATH, "lib")
 sys.path.append(LIB_PATH)
 
 from resources.lib.itunes_parser import *
 
-#DB_PATH = xbmc.translatePath("u:\\plugins\\music\\iTunes\\xbmcitunesdb.db") #FIXME
 DB_PATH = xbmc.translatePath(os.path.join(addon.getAddonInfo("Profile"), "xbmcitunesdb.db"))
 db = ITunesDB(DB_PATH)
 
 platform = "osx"
-
     
 def render_tracks(tracks):
     for track in tracks:
@@ -56,7 +50,7 @@ def render_tracks(tracks):
         if track['year']:
             labels['year'] = int(track['year'])
         if track['rating']:
-            labels['rating'] = int(int(track['rating']) / 20) 
+            labels['rating'] = str(round((track['rating'] / 20)))
         item.setInfo( type="music", infoLabels=labels )
         plugin.addDirectoryItem(handle = int(sys.argv[1]),
                                 url=track['filename'],

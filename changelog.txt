@@ -1,3 +1,7 @@
+0.2.3 - 22 Jan 2011
+- Fixed rendering which sometimes caused tracks and directories
+  to be displayed in the same view.
+
 0.2.2 - 20 Jan 2011
 - Added ability to sort songs by rating, genre, artist, album, track number.
 
