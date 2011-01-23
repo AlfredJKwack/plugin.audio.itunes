@@ -517,10 +517,12 @@ class ITunesDB:
             albumid = self.GetAlbumId(track['Album'], track['Artist'], autoadd=True, rating=track['Album Rating'])
             artistid = self.GetArtistId(track['Artist'], autoadd=True)
             genreid =  self.GetGenreId(track['Genre'], autoadd=True)
+            filetypeid = self.GetFiletypeId(track['Kind'], autoadd=True)
             self.dbconn.execute("""
             INSERT INTO tracks (id, name, genreid, artistid, albumid, filename,
-                                playtime, persistent, year, rating, albumtracknumber)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
+                                playtime, persistent, year, rating, albumtracknumber,
+                                filetypeid)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""",
                                 (int(track['Track ID']),
                                  track['Name'],
                                  genreid,
@@ -531,7 +533,8 @@ class ITunesDB:
                                  track['Persistent ID'],
                                  track['Year'],
                                  track['Rating'],
-                                 track['Track Number']))
+                                 track['Track Number'],
+                                 filetypeid))
         except sqlite.IntegrityError:
             pass
         except Exception, e:
@@ -608,7 +611,8 @@ class ITunesParser:
         self.ProgressCallback = progress_callback
         self.ConfigCallback = config_callback
         for a in ['Album','Artist','Genre','Track ID','Location','Total Time',
-                  'Persistent ID','Year','Rating','Album Rating', 'Track Number']:
+                  'Persistent ID','Year','Rating','Album Rating', 'Track Number',
+                  'Kind']:
             self.currentTrack[a] = ""
         for a in ['Playlist ID','Playlist Persistent ID','Name',
                   'Master','Visible','All Items']:

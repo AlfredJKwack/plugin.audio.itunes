@@ -1,13 +1,27 @@
+0.2.5 - 23 Jan 2011
+
+- Merge: Ability to autoupdate library if iTunes' XML file changed
+
+- Merge: Ability to hide the "import" item from the menu
+
+- Filetypes populated in db (future use) (requires a re-scan of xml file)
+
+
+
 0.2.4 - 23 Jan 2011
 
 - Provide skin with appropriate content type information
 
 - Fixed database reading of track numbers (requires a re-scan of xml file)
 
+
+
 0.2.3 - 22 Jan 2011
 
 - Fixed rendering which sometimes caused tracks and directories
   to be displayed in the same view.
+
+
 
 0.2.2 - 20 Jan 2011
 

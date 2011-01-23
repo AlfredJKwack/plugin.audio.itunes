@@ -347,14 +347,14 @@ def root_directory():
     plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=ratings", listitem = item, 
                             isFolder = True)
 
-    item = gui.ListItem(addon.getLocalizedString(30105), thumbnailImage=ICONS_PATH+"/import.png"  )
-    plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=rescan", listitem = item, 
-                            isFolder = True, totalItems=100)
-
-def main():
-    params = sys.argv[2]
-    process_params(get_params(params))
-    plugin.endOfDirectory( handle = int(sys.argv[1]), succeeded = True )
+    hide_import_lib = addon.getSetting('hide_import_lib')
+    if (hide_import_lib == ""):
+        addon.setSetting('hide_import_lib', 'false')
+        hide_import_lib = "false"
+    if (hide_import_lib == "false"):
+        item = gui.ListItem(addon.getLocalizedString(30105), thumbnailImage=ICONS_PATH+"/import.png"  )
+        plugin.addDirectoryItem(handle = int(sys.argv[1]), url=BASE_URL+"?action=rescan", listitem = item, 
+                                isFolder = True, totalItems=100)
 
 if __name__=="__main__":
     xmlfile = addon.getSetting('albumdata_xml_path')
@@ -366,10 +366,28 @@ if __name__=="__main__":
 	    pass
 
     try:
-        #main()
-		params = sys.argv[2]
-		process_params(get_params(params))
-		plugin.endOfDirectory( handle = int(sys.argv[1]), succeeded = True )
+        # auto-update if so configured
+        auto_update_lib = addon.getSetting('auto_update_lib')
+        if (auto_update_lib == ""): # set default
+            addon.setSetting('auto_update_lib', 'false') 
+            auto_update_lib = "false"
+        if (auto_update_lib == "true"):
+            try:
+                xml_mtime = os.path.getmtime(xmlfile)
+                db_mtime = os.path.getmtime(DB_PATH)
+                print "xml_mtime:" + str(xml_mtime) + " db_mtime: " + str(db_mtime)
+            except Exception, e:
+                print to_str(e)
+                pass
+            else:
+                print "autoupdate check"
+                if (xml_mtime > db_mtime):
+                    import_library(xmlfile)
+
+        params = sys.argv[2]
+        process_params(get_params(params))
+        plugin.endOfDirectory( handle = int(sys.argv[1]), succeeded = True )
+		
     except Exception, e:
         print str(e)
         print traceback.print_exc()

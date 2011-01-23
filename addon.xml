@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="plugin.audio.itunes"
-  version="0.2.4"
+  version="0.2.5"
   name="iTunes"
   provider-name="Alfred J Kwack">
   <requires>
