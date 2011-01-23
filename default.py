@@ -35,6 +35,9 @@ db = ITunesDB(DB_PATH)
 platform = "osx"
     
 def render_tracks(tracks):
+
+    plugin.setContent(handle = int(sys.argv[1]), content= 'songs') 
+
     for track in tracks:
         item = gui.ListItem( track['name'] )
         labels={
@@ -57,6 +60,7 @@ def render_tracks(tracks):
                                 listitem = item,
                                 isFolder = False)
 
+    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_UNSORTED )
     plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_GENRE )
     plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_TITLE )
     plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_TITLE_IGNORE_THE )
@@ -89,12 +93,28 @@ def list_albums(params):
     if not albums:
         return
     icon = ICONS_PATH+"/albums.png"
-    for (albumid, album, artistid) in albums:
-        item = gui.ListItem( album, thumbnailImage=icon )
+    plugin.setContent(handle = int(sys.argv[1]), content= 'albums') 
+    showed_extended_info = 0
+
+    for (albumid, album, artistid, artist) in albums:
+        if (artist):
+            showed_extended_info = 1
+            myStr = album + " ( by " + artist + ")"
+            item = gui.ListItem( myStr , thumbnailImage=icon )
+            item.setInfo( type="music", infoLabels={ 'artist': artist , 'album': album} )
+        else:
+            item = gui.ListItem( album, thumbnailImage=icon )
+            item.setInfo( type="music", infoLabels={ 'album': album} )
         plugin.addDirectoryItem(handle = int(sys.argv[1]),
                                 url=BASE_URL+"?action=albums&albumid=%s" % (albumid),
                                 listitem = item,
                                 isFolder = True)
+
+    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_UNSORTED )
+    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_ALBUM )    
+    if showed_extended_info:
+        plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_ARTIST )
+    
     return
 
 	
@@ -103,17 +123,21 @@ def list_albums_by_artist(params):
     artistid = params['artistid']
     albums = db.GetAlbumsByArtistId(artistid)
     if len(albums) > 0:
-        item = gui.ListItem( "<< All tracks by this Artist >>" )
+        plugin.setContent(handle = int(sys.argv[1]), content= 'albums') 
+        item = gui.ListItem( " << All tracks by this Artist >> " )
         plugin.addDirectoryItem(handle = int(sys.argv[1]),
                                 url=BASE_URL+"?action=tracks&artistid=%s" % artistid,
                                 listitem = item,
                                 isFolder = True)
-        for (albumid, album, artistid) in albums:
+        for (albumid, album, artistid, artist) in albums:
             item = gui.ListItem( album )
+            item.setInfo( type="music", infoLabels={ 'artist': artist , 'album': album} )
             plugin.addDirectoryItem(handle = int(sys.argv[1]),
                                     url=BASE_URL+"?action=albums&albumid=%s" % albumid,
                                     listitem = item,
                                     isFolder = True)
+        plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_LABEL )
+        plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_UNSORTED )
     else:
         list_tracks(params)
     return
@@ -136,6 +160,8 @@ def list_artists(params):
                                 url=BASE_URL+"?action=artists&artistid=%s" % artistid,
                                 listitem = item,
                                 isFolder = True)
+    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_LABEL )
+    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_UNSORTED )
     return
 
 	
@@ -163,6 +189,8 @@ def list_playlists(params):
                                 url=BASE_URL+"?action=playlists&playlistid=%s" % playlistid,
                                 listitem = item,
                                 isFolder = True)
+    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_LABEL )
+    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_UNSORTED )
     return
 
 	
@@ -193,6 +221,8 @@ def list_genres(params):
                                 url=BASE_URL+"?action=genres&genreid=%s" % (genreid),
                                 listitem = item,
                                 isFolder = True, totalItems=100)
+    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_LABEL )
+    plugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=plugin.SORT_METHOD_UNSORTED )    
     return
 
 

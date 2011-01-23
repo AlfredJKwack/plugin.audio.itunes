@@ -1,20 +1,43 @@
+0.2.4 - 23 Jan 2011
+
+- Provide skin with appropriate content type information
+
+- Fixed database reading of track numbers (requires a re-scan of xml file)
+
 0.2.3 - 22 Jan 2011
+
 - Fixed rendering which sometimes caused tracks and directories
   to be displayed in the same view.
 
 0.2.2 - 20 Jan 2011
+
 - Added ability to sort songs by rating, genre, artist, album, track number.
 
+
+
 0.2.1 - 16 Jan 2011
+
 - Ability to autoupdate library if iTunes' XML file changed
+
 - Ability to hide the "import" item from the menu
 
+
+
 0.2.0 - 15 Jan 2011
+
 - Port to new XBMC Addons system
+
 - Make path to AlbumData.xml configurable
+
 - Use pysqlite script module.
+
 - Enable Localization
+
 - Disclaimer: tested on osx only.
 
+
+
 0.1.0 - 2008
+
 - Initial version by Anoop Menon (d4rk@xbmc.org).
+

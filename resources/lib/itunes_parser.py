@@ -276,7 +276,8 @@ class ITunesDB:
         albums = []
         try:
             cur = self.dbconn.cursor()
-            cur.execute("SELECT id,name,artistid FROM albums WHERE artistid=?", (id,))
+#            cur.execute("SELECT id,name,artistid FROM albums WHERE artistid=?", (id,))
+            cur.execute("SELECT L.id, L.name, L.artistid, A.name as artist FROM albums L LEFT JOIN artists A ON L.artistid = A.id WHERE artistid=?", (id,))
             for tuple in cur:
                 albums.append(tuple)
         except Exception, e:
@@ -357,7 +358,8 @@ class ITunesDB:
         albums = []
         try:
             cur = self.dbconn.cursor()
-            cur.execute("SELECT id,name,artistid FROM albums")
+#            cur.execute("SELECT id,name,artistid FROM albums")
+            cur.execute("SELECT L.id, L.name, L.artistid, A.name as artist FROM albums L LEFT JOIN artists A ON L.artistid = A.id")
             for tuple in cur:
                 albums.append(tuple)
         except Exception, e:
@@ -517,8 +519,8 @@ class ITunesDB:
             genreid =  self.GetGenreId(track['Genre'], autoadd=True)
             self.dbconn.execute("""
             INSERT INTO tracks (id, name, genreid, artistid, albumid, filename,
-                                playtime, persistent, year, rating)
-            VALUES (?,?,?,?,?,?,?,?,?,?)""",
+                                playtime, persistent, year, rating, albumtracknumber)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
                                 (int(track['Track ID']),
                                  track['Name'],
                                  genreid,
@@ -528,7 +530,8 @@ class ITunesDB:
                                  track['Total Time'],
                                  track['Persistent ID'],
                                  track['Year'],
-                                 track['Rating']))
+                                 track['Rating'],
+                                 track['Track Number']))
         except sqlite.IntegrityError:
             pass
         except Exception, e:
@@ -605,7 +608,7 @@ class ITunesParser:
         self.ProgressCallback = progress_callback
         self.ConfigCallback = config_callback
         for a in ['Album','Artist','Genre','Track ID','Location','Total Time',
-                  'Persistent ID','Year','Rating','Album Rating']:
+                  'Persistent ID','Year','Rating','Album Rating', 'Track Number']:
             self.currentTrack[a] = ""
         for a in ['Playlist ID','Playlist Persistent ID','Name',
                   'Master','Visible','All Items']:
