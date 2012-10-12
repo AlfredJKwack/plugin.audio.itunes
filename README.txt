@@ -1,6 +1,20 @@
+
+
+
+
+
+==========================================================================
 PLEASE NOTE THAT DUE TO A LACK OF AVAILABLE TIME THIS PROJECT IS CURRENTLY 
 UNMAINTAINED. IF YOU FEEL YOU CAN TAKE OVER THE SUPPORT DO LET ME KNOW.
+==========================================================================
 
+
+
+
+
+
+
+======================
 iTunes plugin for XBMC
 ======================
 This plugin imports an iTunes library into XBMC. After importing, you will
