@@ -360,7 +360,7 @@ if __name__=="__main__":
     xmlfile = addon.getSetting('albumdata_xml_path')
     if (xmlfile == ""):
 	try:
-	    xmlfile = os.getenv("HOME") + "/Music/iTunes/iTunes Music Library.xml"
+	    xmlfile = os.getenv("HOME") + "/Music/iTunes/iTunes Library.xml"
 	    addon.setSetting('albumdata_xml_path', xmlfile)
 	except:
 	    pass
